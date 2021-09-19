@@ -40,7 +40,7 @@ model LevelControl_2 "Level control with a PI controller"
     height=-0.5,
     startTime=1200) "Set Point level"
     annotation (Placement(transformation(extent={{-80,20},{-60,40}})));
-  Modelica.Fluid.Vessels.OpenTank tank(nPorts=3, redeclare package Medium =
+  Modelica.Fluid.Vessels.OpenTank tank(nPorts=2, redeclare package Medium =
         Modelica.Media.Water.ConstantPropertyLiquidWater,
     level_start=Lstart,
     use_HeatTransfer=false,
@@ -92,7 +92,8 @@ model LevelControl_2 "Level control with a PI controller"
     initType=Modelica.Blocks.Types.Init.NoInit,
     T=Tact) "actuator dynamics"
     annotation (Placement(transformation(extent={{72,-42},{92,-22}})));
-  Modelica.Fluid.Sensors.Pressure pSensor(redeclare package Medium =
+  Buildings.Fluid.Sensors.Pressure pSensor(
+                                          redeclare package Medium =
         Modelica.Media.Water.ConstantPropertyLiquidWater) "pressure sensor"
     annotation (Placement(transformation(extent={{160,-16},{180,4}})));
   MathOperations.RealType.Div div(
@@ -127,11 +128,7 @@ equation
       color={0,127,255},
       smooth=Smooth.None));
   connect(Inlet.ports[1], tank.ports[1])     annotation (Line(
-      points={{26,20},{26,-12},{56,-12},{56,-1.11022e-15},{56.6667,-1.11022e-15}},
-      color={0,127,255},
-      smooth=Smooth.None));
-  connect(pipe.port_a,tank. ports[2]) annotation (Line(
-      points={{66,-54},{62,-54},{62,-1.11022e-15}},
+      points={{26,20},{26,-12},{56,-12},{56,-1.11022e-15},{58,-1.11022e-15}},
       color={0,127,255},
       smooth=Smooth.None));
   connect(actuator.y, valveLinear.opening)        annotation (Line(
@@ -148,10 +145,6 @@ equation
       smooth=Smooth.None));
   connect(pipe.port_b, valveLinear.port_a) annotation (Line(
       points={{86,-54},{94,-54}},
-      color={0,127,255},
-      smooth=Smooth.None));
-  connect(pSensor.port, tank.ports[3]) annotation (Line(
-      points={{170,-16},{67.3333,-16},{67.3333,-1.11022e-15}},
       color={0,127,255},
       smooth=Smooth.None));
   connect(rho_times_g.y, div.u2) annotation (Line(
@@ -175,6 +168,10 @@ equation
       color={0,0,127},
       smooth=Smooth.None));
 
+  connect(tank.ports[2], pipe.port_a) annotation (Line(points={{66,0},{64,0},{
+          64,-54},{66,-54}}, color={0,127,255}));
+  connect(pSensor.port, pipe.port_a) annotation (Line(points={{170,-16},{64,-16},
+          {64,-54},{66,-54}}, color={0,127,255}));
   annotation (Diagram(coordinateSystem(preserveAspectRatio=true, extent={{-100,-100},
             {300,100}}),
                       graphics={
